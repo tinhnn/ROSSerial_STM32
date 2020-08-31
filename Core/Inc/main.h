@@ -52,10 +52,9 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void SystemClock_Config(void);
 
 /* USER CODE BEGIN EFP */
-
+void SystemClock_Config(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
