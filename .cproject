@@ -49,6 +49,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/RTOS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/USB_CDC}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
@@ -76,6 +77,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/RTOS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/USB_CDC}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
@@ -107,6 +109,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="App"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
@@ -162,6 +165,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/RTOS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/USB_CDC}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
@@ -188,6 +192,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/RTOS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/USB_CDC}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
@@ -219,6 +224,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="App"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
