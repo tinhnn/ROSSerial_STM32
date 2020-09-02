@@ -53,15 +53,15 @@ class STM32Hardware {
     }
 
     int read(){
-    	uint32_t r;
+    	uint8_t ret;
     	uint8_t ch = -1;
 
-    	r = ringbuffer_getchar(&rb, &ch);
+    	ret = CDC_GetChar(&ch);
 
-    	if (1 == r)
-    		return ch;
-    	else
-    		return -1;
+    	if (1 == ret)
+			return ch;
+		else
+			return -1;
     }
 
     void write(uint8_t* data, int length){

@@ -31,11 +31,11 @@
 /* Private macro -------------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+struct ringbuffer rb;
 uint8_t RxBuffer[RxBufferSize];
 uint32_t readIndex = RxBufferSize;
 uint32_t RxFifoIndex = 0;
-
-/* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
 
@@ -157,6 +157,7 @@ USBD_CDC_ItfTypeDef USBD_Interface_fops_FS =
 static int8_t CDC_Init_FS(void)
 {
   /* USER CODE BEGIN 3 */
+  ringbuffer_init(&rb, RxBuffer, RxBufferSize);
   /* Set Application Buffers */
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, UserTxBufferFS, 0);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, UserRxBufferFS);
@@ -272,7 +273,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   while(counter < *Len)
   {
        RxBuffer[RxFifoIndex ] = Buf[counter];
-       cdc_receive_put(Buf[counter]);
+       ringbuffer_putchar(&rb, Buf[counter]);
        counter++, RxFifoIndex++;
        if(RxFifoIndex  == RxBufferSize)
             RxFifoIndex  = 0;
@@ -333,7 +334,12 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
-
+uint8_t CDC_GetChar(uint8_t* Buf)
+{
+	uint8_t result = USBD_OK;
+	result = (uint8_t)ringbuffer_getchar(&rb, Buf);
+	return result;
+}
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

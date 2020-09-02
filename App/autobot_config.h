@@ -7,9 +7,6 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 
-#include "ringbuffer.h"
-
-
 /*******************************************************************************
  *  Callback Function prototype
  ******************************************************************************/
