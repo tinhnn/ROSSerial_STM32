@@ -7,22 +7,25 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
 
 #define USING_DFR0592
 
-#ifdef USING_DFR0592        /* Using DFR0592 motor control board */
-#include "board/DFR0592.h"
-#else                       /* using nucleo motor control board*/
-#include "board/nucleo_f746zg.h"
+#if defined(USING_DFR0592)           /* Using DFR0592 motor control board */
+#include "DFR0592/DFR0592.h"
+#elif defined(USING_PCA9685)         /* Using PCA9685 motor control board */
+#include "PCA9685/PCA9685.h"
+#else                               /* using nucleo motor control board*/
+#include "NUCLEO_F746ZG/nucleo_f746zg.h"
 #endif
 
 
 /*******************************************************************************
  *  DEFINE
  ******************************************************************************/
-#define CONTROL_MOTOR_SPEED_FREQUENCY               30      //hz
+#define CONTROL_MOTOR_SPEED_FREQUENCY               30       //hz
 #define CONTROL_MOTOR_TIMEOUT                       500     //ms
-#define ODOMETRY_PUBLISH_FREQUENCY                  30      //hz
+#define DRIVE_INFO_PUBLISH_FREQUENCY                30      //hz
 
 #define WHEEL_NUM                           2
 
@@ -32,14 +35,14 @@
 #define LINEAR                              0
 #define ANGULAR                             1
 
-#define TICK2RAD                         0.001533981  // 0.087890625[deg] * 3.14159265359 / 180 = 0.001533981f
+#define TICK2RAD                            0.001533981  // 0.087890625[deg] * 3.14159265359 / 180 = 0.001533981f
 
 #define abs(x)                  ((x)>0?(x):-(x))
 #define constrain(amt,low,high) ((amt)<=(low)?(low):((amt)>=(high)?(high):(amt)))
 
 typedef enum EVENT_TIMER_E{
 	UPDATE_MOTOR_VEL,
-    UPDATE_ODOM,
+    UPDATE_DRIVE_INFO,
     REV_CMD_VEL,
     MAX_EVT_TIMER,
 }EVENT_TIMER;
@@ -48,30 +51,22 @@ typedef enum EVENT_TIMER_E{
  *  Variable
  ******************************************************************************/
 /* Declaration for motor */
-#ifdef USING_DFR0592        /* Using DFR0592 motor control board */
+#if defined(USING_DFR0592)          /* Using DFR0592 motor control board */
 DFR0592 motor_driver;
-#else                       /* using nucleo motor control board*/
+#elif defined(USING_PCA9685)        /* Using PCA9685 motor control board */
+PCA9685 motor_driver;
+#else                               /* using nucleo motor control board*/
 NUCLEO_F746ZG motor_driver;
 #endif
-float zero_velocity[WHEEL_NUM] = {0.0, 0.0};
-float goal_velocity[WHEEL_NUM] = {0.0, 0.0};
 
-/* software timer of Autobot */
-static uint32_t evtTimer[MAX_EVT_TIMER];
-
-/************ ROS Parameter ***************************************************/
-char get_prefix[10];
-char* get_tf_prefix = get_prefix;
-
-char odom_header_frame_id[30];
-char odom_child_frame_id[30];
 
 /*******************************************************************************
- *  Callback Function prototype
+ *  Function prototype
  ******************************************************************************/
 void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg);
 
-
+void publishDriveInformation(void);
+void initOdom(void);
 
 /*******************************************************************************
  *  SUBSCRIBER TOPIC
@@ -81,10 +76,12 @@ ros::Subscriber<geometry_msgs::Twist> cmd_vel_sub("cmd_vel", commandVelocityCall
 /*******************************************************************************
  *  PUBLISHER TOPIC
  ******************************************************************************/
-/* Odometry */
+/***************** Odometry *****************/
 nav_msgs::Odometry odom;
 ros::Publisher odom_pub("odom", &odom);
 
-
+/********** Transform Broadcaster **********/
+geometry_msgs::TransformStamped odom_tf;
+tf::TransformBroadcaster tf_broadcaster;
 
 #endif /* AUTOBOT_CONFIG_H */

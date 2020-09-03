@@ -360,7 +360,7 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
 	loop();
-    osDelay(10);
+    osDelay(1);
   }
   /* USER CODE END 5 */
 }

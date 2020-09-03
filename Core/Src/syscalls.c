@@ -30,6 +30,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/times.h>
+#include "main.h"
 
 
 /* Variables */
@@ -156,4 +157,11 @@ int _execve(char *name, char **argv, char **env)
 {
 	errno = ENOMEM;
 	return -1;
+}
+
+extern UART_HandleTypeDef huart3;
+int __io_putchar(int ch)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *) &ch, 1, HAL_MAX_DELAY);
+	return 0;
 }

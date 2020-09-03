@@ -10,7 +10,8 @@ private:
 public:
     DFR0592(/* args */);
     ~DFR0592();
-
+    
+    void init(void);
     bool controlMotor(const float wheel_radius, const float wheel_separation, float* value);
     float* getOrientation(void);
 };

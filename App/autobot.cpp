@@ -7,20 +7,33 @@
 
 #define get_currenttime HAL_GetTick
 
+/* ROS node handle */
 ros::NodeHandle nh;
 
 unsigned long prev_update_time;
 float odom_pose[3];
 double odom_vel[3];
+/* Calculation for odometry */
+bool init_encoder = true;
 int32_t last_diff_tick[WHEEL_NUM] = {0, 0};
 double  last_velocity[WHEEL_NUM]  = {0.0, 0.0};
+float zero_velocity[WHEEL_NUM] = {0.0, 0.0};
+float goal_velocity[WHEEL_NUM] = {0.0, 0.0};
 
-/********* PROTOTYPE FUNCTION *************************************************/
-void publishOdometry(void);
+/* software timer of Autobot */
+static uint32_t evtTimer[MAX_EVT_TIMER];
+
+/* ROS Parameter */
+char get_prefix[10];
+char* get_tf_prefix = get_prefix;
+
+char odom_header_frame_id[30];
+char odom_child_frame_id[30];
+
 
 
 /*******************************************************************************
- *
+ * GLOBAL FUNCTION
  ******************************************************************************/
 void setup()
 {
@@ -30,8 +43,16 @@ void setup()
     nh.subscribe(cmd_vel_sub);
     nh.advertise(odom_pub);
 
-    // Initialize motor board
-    
+    tf_broadcaster.init(nh);
+
+    // Initialize motor control board
+    motor_driver.init();
+
+    // Init Odom
+    initOdom();
+
+    prev_update_time = get_currenttime();
+
 }
 
 
@@ -53,16 +74,18 @@ void loop()
     }
 
     /*********** publish topic ************************************************/
-    if((cur_t - evtTimer[UPDATE_ODOM]) >= (1000 / ODOMETRY_PUBLISH_FREQUENCY)){
-        publishOdometry();
-        evtTimer[UPDATE_ODOM] = cur_t;
+    if((cur_t - evtTimer[UPDATE_DRIVE_INFO]) >= (1000 / DRIVE_INFO_PUBLISH_FREQUENCY)){
+        publishDriveInformation();
+        evtTimer[UPDATE_DRIVE_INFO] = cur_t;
     }
 
     nh.spinOnce();
 }
 
 /*******************************************************************************
- *
+ * FUNC: commandVelocityCallback
+ * Description: cmd_vel callback function
+ * Param:
  ******************************************************************************/
 void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
 {
@@ -72,6 +95,29 @@ void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
     goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MIN_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY);
     goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
     evtTimer[REV_CMD_VEL] = get_currenttime();
+}
+
+void initOdom(void)
+{
+    init_encoder = true;
+
+    for (int index = 0; index < 3; index++)
+    {
+        odom_pose[index] = 0.0;
+        odom_vel[index]  = 0.0;
+    }
+
+    odom.pose.pose.position.x = 0.0;
+    odom.pose.pose.position.y = 0.0;
+    odom.pose.pose.position.z = 0.0;
+
+    odom.pose.pose.orientation.x = 0.0;
+    odom.pose.pose.orientation.y = 0.0;
+    odom.pose.pose.orientation.z = 0.0;
+    odom.pose.pose.orientation.w = 0.0;
+
+    odom.twist.twist.linear.x  = 0.0;
+    odom.twist.twist.angular.z = 0.0;
 }
 
 bool calcOdometry(double diff_time)
@@ -145,10 +191,20 @@ void updateOdometry(void)
     odom.twist.twist.angular.z = odom_vel[2];
 }
 
+void updateTF(geometry_msgs::TransformStamped& odom_tf)
+{
+    odom_tf.header = odom.header;
+    odom_tf.child_frame_id = odom.child_frame_id;
+    odom_tf.transform.translation.x = odom.pose.pose.position.x;
+    odom_tf.transform.translation.y = odom.pose.pose.position.y;
+    odom_tf.transform.translation.z = odom.pose.pose.position.z;
+    odom_tf.transform.rotation      = odom.pose.pose.orientation;
+}
+
 /*******************************************************************************
-* Publish msgs (odometry)
+* Publish msgs (odometry, tf)
 *******************************************************************************/
-void publishOdometry(void)
+void publishDriveInformation(void)
 {
 	unsigned long time_now = get_currenttime();
 	unsigned long step_time = time_now - prev_update_time;
@@ -161,5 +217,10 @@ void publishOdometry(void)
     // publish odometry
     odom.header.stamp = stamp_now;
     odom_pub.publish(&odom);
+
+    // publish tf
+    updateTF(odom_tf);
+    odom_tf.header.stamp = stamp_now;
+    tf_broadcaster.sendTransform(odom_tf);
 }
 
