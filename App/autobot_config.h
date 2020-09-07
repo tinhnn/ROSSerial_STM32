@@ -9,7 +9,7 @@
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 
-#define USING_DFR0592
+#define USING_PCA9685
 
 #if defined(USING_DFR0592)           /* Using DFR0592 motor control board */
 #include "DFR0592/DFR0592.h"

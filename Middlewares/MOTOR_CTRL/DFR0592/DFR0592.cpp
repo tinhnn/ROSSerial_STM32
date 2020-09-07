@@ -19,8 +19,8 @@ void DFR0592::init(void)
 
 bool DFR0592::controlMotor(const float wheel_radius, const float wheel_separation, float* value)
 {
-	float vel_lin_x = value[0];
-	float vel_ang_z = value[1];
+	//float vel_lin_x = value[0];
+	//float vel_ang_z = value[1];
 	printf("set velocity\r\n");
     return 0;
 }
