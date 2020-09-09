@@ -113,31 +113,6 @@ StepperMotor *PCA9685::getStepper(uint16_t steps, uint8_t num) {
     return &steppers[num];
 }
 
-bool PCA9685::controlMotor(const float wheel_radius, const float wheel_separation, float* value)
-{
-	//float vel_lin_x = value[0];
-	//float vel_ang_z = value[1];
-	printf("set velocity\r\n");
-    return 0;
-}
-
-float* PCA9685::getOrientation(void)
-{
-    static float orientation[4];
-
-    //orientation[0] = imu_.quat[0];
-    //orientation[1] = imu_.quat[1];
-    //orientation[2] = imu_.quat[2];
-    //orientation[3] = imu_.quat[3];
-    orientation[0] = 0;
-    orientation[1] = 0;
-    orientation[2] = 0;
-    orientation[3] = 0;
-
-
-    return orientation;
-}
-
 
 /*******************************************************************************
  * Utility function

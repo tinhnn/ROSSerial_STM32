@@ -53,6 +53,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/MOTOR_CTRL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/IMU}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.611795541" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -75,6 +76,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/MOTOR_CTRL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/IMU}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp.355970410" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp"/>
 							</tool>
@@ -159,6 +161,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/MOTOR_CTRL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/IMU}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.705530865" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -180,6 +183,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/ROS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/MOTOR_CTRL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ROSSerial_STM32/Middlewares/IMU}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp.1425052820" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp"/>
 							</tool>

@@ -15,10 +15,11 @@ float odom_pose[3];
 double odom_vel[3];
 /* Calculation for odometry */
 bool init_encoder = true;
-int32_t last_diff_tick[WHEEL_NUM] = {0, 0};
-double  last_velocity[WHEEL_NUM]  = {0.0, 0.0};
-float zero_velocity[WHEEL_NUM] = {0.0, 0.0};
-float goal_velocity[WHEEL_NUM] = {0.0, 0.0};
+int32_t last_diff_tick[WHEEL_NUM]   = {0, 0};
+double  last_rad[WHEEL_NUM]         = {0.0, 0.0};
+double  last_velocity[WHEEL_NUM]    = {0.0, 0.0};
+float zero_velocity[WHEEL_NUM]      = {0.0, 0.0};
+float goal_velocity[WHEEL_NUM]      = {0.0, 0.0};
 
 /* software timer of Autobot */
 static uint32_t evtTimer[MAX_EVT_TIMER];
@@ -29,7 +30,7 @@ char* get_tf_prefix = get_prefix;
 
 char odom_header_frame_id[30];
 char odom_child_frame_id[30];
-
+char joint_state_header_frame_id[30];
 
 
 /*******************************************************************************
@@ -41,15 +42,22 @@ void setup()
     nh.initNode();
 
     nh.subscribe(cmd_vel_sub);
+    nh.subscribe(reset_sub);
+
     nh.advertise(odom_pub);
+    nh.advertise(joint_states_pub);
 
     tf_broadcaster.init(nh);
 
     // Initialize motor control board
     motor_driver.init();
 
+    // Initialize IMU
+    sensor.init();
+
     // Init Odom
     initOdom();
+    initJointStates();
 
     prev_update_time = get_currenttime();
 
@@ -79,22 +87,30 @@ void loop()
         evtTimer[UPDATE_DRIVE_INFO] = cur_t;
     }
 
+    // Update the IMU unit
+    sensor.updateIMU();
+
+    // Start Gyro Calibration after ROS connection
+    updateGyroCali(nh.connected());
+
     nh.spinOnce();
 }
 
-/*******************************************************************************
- * FUNC: commandVelocityCallback
- * Description: cmd_vel callback function
- * Param:
- ******************************************************************************/
-void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
-{
-    goal_velocity[LINEAR]  = cmd_vel_msg.linear.x;
-    goal_velocity[ANGULAR] = cmd_vel_msg.angular.z;
 
-    goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MIN_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY);
-    goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
-    evtTimer[REV_CMD_VEL] = get_currenttime();
+/*******************************************************************************
+ * Private FUNCTION
+ ******************************************************************************/
+void initJointStates(void)
+{
+    static char *joint_states_name[] = {(char*)"wheel_left_joint", (char*)"wheel_right_joint"};
+
+    joint_states.header.frame_id = joint_state_header_frame_id;
+    joint_states.name            = joint_states_name;
+
+    joint_states.name_length     = WHEEL_NUM;
+    joint_states.position_length = WHEEL_NUM;
+    joint_states.velocity_length = WHEEL_NUM;
+    joint_states.effort_length   = WHEEL_NUM;
 }
 
 void initOdom(void)
@@ -150,7 +166,7 @@ bool calcOdometry(double diff_time)
 
     delta_s     = WHEEL_RADIUS * (wheel_r + wheel_l) / 2.0;
 
-    orientation = motor_driver.getOrientation();
+    orientation = sensor.getOrientation();
     theta       = atan2f(orientation[1]*orientation[2] + orientation[0]*orientation[3], 
                 0.5f - orientation[2]*orientation[2] - orientation[3]*orientation[3]);
 
@@ -201,8 +217,94 @@ void updateTF(geometry_msgs::TransformStamped& odom_tf)
     odom_tf.transform.rotation      = odom.pose.pose.orientation;
 }
 
+void updateJointStates(void)
+{
+    static float joint_states_pos[WHEEL_NUM] = {0.0, 0.0};
+    static float joint_states_vel[WHEEL_NUM] = {0.0, 0.0};
+    //static float joint_states_eff[WHEEL_NUM] = {0.0, 0.0};
+
+    joint_states_pos[LEFT]  = last_rad[LEFT];
+    joint_states_pos[RIGHT] = last_rad[RIGHT];
+
+    joint_states_vel[LEFT]  = last_velocity[LEFT];
+    joint_states_vel[RIGHT] = last_velocity[RIGHT];
+
+    joint_states.position = joint_states_pos;
+    joint_states.velocity = joint_states_vel;
+}
+
+void updateGyroCali(bool isConnected)
+{
+    static bool isEnded = false;
+    char log_msg[50];
+
+    (void)(isConnected);
+
+    if (nh.connected()) {
+        if (isEnded == false)
+        {
+            sprintf(log_msg, "Start Calibration of Gyro");
+            nh.loginfo(log_msg);
+
+            sensor.calibrationGyro();
+
+            sprintf(log_msg, "Calibration End");
+            nh.loginfo(log_msg);
+
+            isEnded = true;
+        }
+    }
+    else {
+        isEnded = false;
+    }
+}
+
 /*******************************************************************************
-* Publish msgs (odometry, tf)
+ * Subscribe topic callback function
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNC: commandVelocityCallback
+ * Description: cmd_vel callback function
+ * Param:
+ ******************************************************************************/
+void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
+{
+    goal_velocity[LINEAR]  = cmd_vel_msg.linear.x;
+    goal_velocity[ANGULAR] = cmd_vel_msg.angular.z;
+
+    goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MIN_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY);
+    goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+    evtTimer[REV_CMD_VEL] = get_currenttime();
+}
+
+/*******************************************************************************
+ * FUNC: resetCallback
+ * Description: reset callback function
+ * Param:
+ ******************************************************************************/
+void resetCallback(const std_msgs::Empty& reset_msg)
+{
+    char log_msg[50];
+
+    (void)(reset_msg);
+
+    sprintf(log_msg, "Start Calibration of Gyro");
+    nh.loginfo(log_msg);
+
+    sensor.calibrationGyro();
+
+    sprintf(log_msg, "Calibration End");
+    nh.loginfo(log_msg);
+
+    initOdom();
+
+    sprintf(log_msg, "Reset Odometry");
+    nh.loginfo(log_msg);  
+}
+
+/*******************************************************************************
+* Publish topic function
 *******************************************************************************/
 void publishDriveInformation(void)
 {
@@ -222,5 +324,11 @@ void publishDriveInformation(void)
     updateTF(odom_tf);
     odom_tf.header.stamp = stamp_now;
     tf_broadcaster.sendTransform(odom_tf);
+
+    // publish joint states
+    updateJointStates();
+    joint_states.header.stamp = stamp_now;
+    joint_states_pub.publish(&joint_states);
 }
 
+/********************************** END FILE **********************************/

@@ -86,10 +86,6 @@ public:
     friend class DCMotor;
     void setPin(uint8_t pin, bool val);
     void setPWM(uint8_t pin, uint16_t val);
-
-
-    bool controlMotor(const float wheel_radius, const float wheel_separation, float* value);
-    float* getOrientation(void);        // will move to IMU
 };
 
 
