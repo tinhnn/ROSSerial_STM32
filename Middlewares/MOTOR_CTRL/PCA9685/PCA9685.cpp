@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "PCA9685.h"
 
-#define LOW         0
-#define HIGH        1
 
 /*******************************************************************************
  * PCA9685 motor HAT function
@@ -48,9 +46,9 @@ DCMotor *PCA9685::getMotor(uint8_t num) {
 
     num--;
 
-    if (dcmotors[num].motornum == 0) {
-        dcmotors[num].motornum = num;
-        dcmotors[num].MC = this;
+    if (_dcmotors[num].motornum == 0) {
+        _dcmotors[num].motornum = num;
+        _dcmotors[num].MC = this;
         uint8_t pwm, in1, in2;
         if (num == 0) {             /* DC Motor 1 */
             pwm = 8;
@@ -69,12 +67,12 @@ DCMotor *PCA9685::getMotor(uint8_t num) {
             in2 = 6;
             in1 = 5;
         }
-        dcmotors[num].PWMpin = pwm;
-        dcmotors[num].IN1pin = in1;
-        dcmotors[num].IN2pin = in2;
+        _dcmotors[num].PWMpin = pwm;
+        _dcmotors[num].IN1pin = in1;
+        _dcmotors[num].IN2pin = in2;
     }
 
-    return &dcmotors[num];
+    return &_dcmotors[num];
 }
 
 StepperMotor *PCA9685::getStepper(uint16_t steps, uint8_t num) {
@@ -83,10 +81,10 @@ StepperMotor *PCA9685::getStepper(uint16_t steps, uint8_t num) {
 
     num--;
 
-    if (steppers[num].steppernum == 0) {
-        steppers[num].steppernum = num;
-        steppers[num].revsteps = steps;
-        steppers[num].MC = this;
+    if (_steppers[num].steppernum == 0) {
+    	_steppers[num].steppernum = num;
+    	_steppers[num].revsteps = steps;
+    	_steppers[num].MC = this;
         uint8_t pwma, pwmb, ain1, ain2, bin1, bin2;
         if (num == 0) {             /* Stepper Motor 1 */
             pwma = 8;
@@ -103,14 +101,14 @@ StepperMotor *PCA9685::getStepper(uint16_t steps, uint8_t num) {
             bin2 = 6;
             bin1 = 5;
         }
-        steppers[num].PWMApin = pwma;
-        steppers[num].PWMBpin = pwmb;
-        steppers[num].AIN1pin = ain1;
-        steppers[num].AIN2pin = ain2;
-        steppers[num].BIN1pin = bin1;
-        steppers[num].BIN2pin = bin2;
+        _steppers[num].PWMApin = pwma;
+        _steppers[num].PWMBpin = pwmb;
+        _steppers[num].AIN1pin = ain1;
+        _steppers[num].AIN2pin = ain2;
+        _steppers[num].BIN1pin = bin1;
+        _steppers[num].BIN2pin = bin2;
     }
-    return &steppers[num];
+    return &_steppers[num];
 }
 
 
