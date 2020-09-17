@@ -50,7 +50,7 @@ void setup()
     tf_broadcaster.init(nh);
 
     // Initialize motor control board
-    motor_driver.init();
+    motor_control.init();
 
     // Initialize IMU
     sensor.init();
@@ -72,10 +72,10 @@ void loop()
     if((cur_t - evtTimer[UPDATE_MOTOR_VEL]) >= (1000 / CONTROL_MOTOR_SPEED_FREQUENCY)){
         if ((cur_t-evtTimer[REV_CMD_VEL]) > CONTROL_MOTOR_TIMEOUT)
         {
-            motor_driver.controlMotor(WHEEL_RADIUS, WHEEL_SEPARATION, zero_velocity);
+        	motor_control.write_velocity(zero_velocity[0], zero_velocity[1]);
         } 
         else {
-            motor_driver.controlMotor(WHEEL_RADIUS, WHEEL_SEPARATION, goal_velocity);
+        	motor_control.write_velocity(goal_velocity[0],goal_velocity[1]);
         }
 
         evtTimer[UPDATE_MOTOR_VEL] = cur_t;
@@ -273,7 +273,7 @@ void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
     goal_velocity[LINEAR]  = cmd_vel_msg.linear.x;
     goal_velocity[ANGULAR] = cmd_vel_msg.angular.z;
 
-    goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MIN_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY);
+    goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MOTOR_MIN_SPEED, MOTOR_MAX_SPEED);
     goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
     evtTimer[REV_CMD_VEL] = get_currenttime();
 }

@@ -12,7 +12,7 @@
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 
-#include "utility/motor_driver.h"
+#include "motor_controller.h"
 #include "utility/sensors.h"
 
 
@@ -47,7 +47,7 @@ typedef enum EVENT_TIMER_E{
  *  Variable
  ******************************************************************************/
 /* Declaration for motor */
-motor_driver motor_driver;
+motor_control motor_control;
 sensors sensor;
 
 
