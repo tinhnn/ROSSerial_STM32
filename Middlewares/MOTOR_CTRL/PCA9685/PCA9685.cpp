@@ -2,6 +2,9 @@
 
 #include <stdio.h>
 #include "PCA9685.h"
+#include "main.h"
+
+extern I2C_HandleTypeDef hi2c1;
 
 
 /*******************************************************************************
@@ -14,9 +17,9 @@ PCA9685::PCA9685(uint8_t addr)
 }
 
 
-void PCA9685::init(uint16_t freq, I2C_HandleTypeDef *i2c_hdl)
+void PCA9685::init(uint16_t freq)
 {
-    _i2c_hdl = i2c_hdl;
+    _i2c_hdl = &hi2c1;
     _pwm.begin(_i2c_hdl);
     _freq = freq;
     _pwm.setPWMFreq(_i2c_hdl, _freq); // This is the maximum PWM frequency

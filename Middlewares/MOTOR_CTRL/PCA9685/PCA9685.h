@@ -83,7 +83,7 @@ private:
 public:
     PCA9685(uint8_t addr = 0x60);
     
-    void init(uint16_t freq = 1600, I2C_HandleTypeDef *i2c_hdl = NULL);
+    void init(uint16_t freq = 1600);
     DCMotor *getMotor(uint8_t n);
     StepperMotor *getStepper(uint16_t steps, uint8_t n);
     friend class DCMotor;

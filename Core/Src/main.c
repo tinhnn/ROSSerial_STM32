@@ -50,11 +50,12 @@ UART_HandleTypeDef huart3;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
+osThreadAttr_t defaultTask_attributes;
+//const osThreadAttr_t defaultTask_attributes = {
+//  .name = "defaultTask",
+//  .priority = (osPriority_t) osPriorityNormal,
+//  .stack_size = 128 * 4
+//};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -106,7 +107,9 @@ int main(void)
   MX_USART3_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  defaultTask_attributes.name = "defaultTask";
+  defaultTask_attributes.priority = (osPriority_t) osPriorityNormal;
+  defaultTask_attributes.stack_size = 128 * 4;
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -360,7 +363,7 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
 	loop();
-    osDelay(1);
+    //osDelay(1);
   }
   /* USER CODE END 5 */
 }

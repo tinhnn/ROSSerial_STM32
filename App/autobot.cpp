@@ -50,7 +50,16 @@ void setup()
     tf_broadcaster.init(nh);
 
     // Initialize motor control board
-    motor_control.init();
+    struct robot_param param;
+    param.wheel_base 			= WHEEL_BASE;
+    param.track_width 			= TRACK_WIDTH;
+    param.wheel_radius 			= WHEEL_RADIUS;
+    param.motor_max_rotation 	= MOTOR_MAX_ROTATION;
+    param.motor_max_speed       = MOTOR_MAX_SPEED;
+    param.motor_min_speed       = MOTOR_MIN_SPEED;
+    param.anglr_max_speed       = ANGLR_MAX_SPEED;
+    param.anglr_min_speed       = ANGLR_MIN_SPEED;
+    motor_control.init(param);
 
     // Initialize IMU
     sensor.init();
@@ -77,6 +86,7 @@ void loop()
         else {
         	motor_control.write_velocity(goal_velocity[0],goal_velocity[1]);
         }
+        //motor_control.write_velocity(0.1, 0.1);
 
         evtTimer[UPDATE_MOTOR_VEL] = cur_t;
     }
@@ -274,7 +284,7 @@ void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
     goal_velocity[ANGULAR] = cmd_vel_msg.angular.z;
 
     goal_velocity[LINEAR]  = constrain(goal_velocity[LINEAR],  MOTOR_MIN_SPEED, MOTOR_MAX_SPEED);
-    goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+    goal_velocity[ANGULAR] = constrain(goal_velocity[ANGULAR], ANGLR_MIN_SPEED, ANGLR_MAX_SPEED);
     evtTimer[REV_CMD_VEL] = get_currenttime();
 }
 
