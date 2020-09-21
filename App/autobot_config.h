@@ -13,13 +13,13 @@
 #include <tf/transform_broadcaster.h>
 
 #include "motor_controller.h"
-#include "utility/sensors.h"
+#include "sensors.h"
 
 
 /*******************************************************************************
  *  DEFINE
  ******************************************************************************/
-#define CONTROL_MOTOR_SPEED_FREQUENCY               30       //hz
+#define CONTROL_MOTOR_SPEED_FREQUENCY               30      //hz
 #define CONTROL_MOTOR_TIMEOUT                       500     //ms
 #define DRIVE_INFO_PUBLISH_FREQUENCY                30      //hz
 

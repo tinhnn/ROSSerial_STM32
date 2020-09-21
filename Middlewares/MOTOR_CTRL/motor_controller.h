@@ -6,8 +6,6 @@
 #include <stdint.h>
 
 /* select motor control board */
-#define USING_PCA9685_BOARD
-
 #if defined(USING_PCA9685_BOARD)
 #include "PCA9685/PCA9685.h"
 #elif defined(USING_DFR0592_BOARD)
